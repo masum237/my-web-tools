@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SureSMS UID Checker - Masum Automation</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-main: #0b0f19;
+            --bg-surface: #121624;
+            --bg-card: #181c2a;
+            --bg-input: #0e111a;
+            --border: #23283b;
+            --text-main: #ffffff;
+            --text-muted: #8b94a5;
+            --accent-cyan: #00f0ff;
+            --accent-green: #00e676;
+            --accent-blue: #3b82f6;
+            --icon-orange: #ff9800;
+            --icon-red: #f44336;
+            --icon-teal: #14b8a6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Unified Sidebar */
+        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; flex-shrink: 0; z-index: 10; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 800; color: var(--text-main); text-decoration: none; margin-bottom: 24px; padding: 0 8px; }
+        .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); border-radius: 8px; display: grid; place-items: center; color: #000; }
+        .user-badge { background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); color: var(--accent-green); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 30px; }
+        .user-badge::before { content: ''; width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); }
+        
+        .nav-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin: 10px 8px; letter-spacing: 1px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; color: var(--text-muted); text-decoration: none; border-radius: 8px; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; margin-bottom: 4px; }
+        .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
+        .nav-item.active { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); font-weight: 600; border: 1px solid rgba(0, 240, 255, 0.2); border-left: 3px solid var(--accent-cyan); }
+        .nav-icon { width: 18px; height: 18px; stroke-width: 2.5; }
+
+        .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .control-box { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); background: var(--bg-card); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
+        
+        /* Main Layout for Iframe */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Iframe container - kono padding nai jate full screen pay */
+        .main-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+        
+        .iframe-container { flex: 1; width: 100%; height: 100%; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Unified Sidebar with new menu item -->
+    <aside class="sidebar">
+        <a href="index.html" class="brand">
+            <div class="brand-icon"><i data-lucide="cpu" style="width: 20px; height: 20px;"></i></div>
+            <span>Masum Automation</span>
+        </a>
+        <div class="user-badge">Public Workspace</div>
+        
+        <div class="nav-label">Navigation</div>
+        <a href="index.html" class="nav-item">
+            <i data-lucide="home" class="nav-icon"></i> Welcome
+        </a>
+        
+        <div class="nav-label">Tool Suite</div>
+        <a href="uid_extractor.html" class="nav-item">
+            <i data-lucide="scan-line" class="nav-icon" style="color: var(--icon-orange);"></i> UID Extractor
+        </a>
+        <a href="cookies_converter.html" class="nav-item">
+            <i data-lucide="file-json-2" class="nav-icon" style="color: var(--icon-red);"></i> Cookies Converter
+        </a>
+        <a href="error_filter.html" class="nav-item">
+            <i data-lucide="zap" class="nav-icon" style="color: var(--accent-green);"></i> Error Filter Pro
+        </a>
+        
+        <div class="nav-label">External Tools</div>
+        <!-- Eita notun active menu -->
+        <a href="uid_checker.html" class="nav-item active">
+            <i data-lucide="shield-check" class="nav-icon" style="color: var(--icon-teal);"></i> SureSMS UID Checker
+        </a>
+
+        <div class="sidebar-bottom">
+            <div class="control-box"><span>Live Active</span> <span style="color: var(--text-main); font-weight:bold;">1</span></div>
+            <div class="control-box"><span>Theme</span> <span>Dark ▼</span></div>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <main class="main-content">
+            <!-- Iframe to load the external website -->
+            <div class="iframe-container">
+                <iframe src="https://uid.sure-sms.com/" title="SureSMS UID Checker"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
