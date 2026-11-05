@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Tools Suite</title>
+    <title>Masum Automation Suite</title>
+    <!-- Premium Icons Library -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -19,6 +21,8 @@
             --accent-purple: #b148d2;
             --accent-green: #00e676;
             --accent-blue: #3b82f6;
+            --icon-orange: #ff9800;
+            --icon-red: #f44336;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -47,7 +51,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: var(--text-main);
             text-decoration: none;
@@ -55,8 +59,8 @@
             padding: 0 8px;
         }
         .brand-icon {
-            width: 32px; height: 32px; background: var(--accent-cyan);
-            border-radius: 8px; display: grid; place-items: center; color: #000; font-size: 18px;
+            width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border-radius: 8px; display: grid; place-items: center; color: #000;
         }
 
         .user-badge {
@@ -82,9 +86,9 @@
             font-size: 0.85rem; font-weight: 500; transition: all 0.2s; margin-bottom: 4px;
         }
         .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
-        .nav-item.active { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); font-weight: 600; border: 1px solid rgba(0, 240, 255, 0.2); }
+        .nav-item.active { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); font-weight: 600; border: 1px solid rgba(0, 240, 255, 0.2); border-left: 3px solid var(--accent-cyan); }
         
-        .nav-icon { font-size: 1.1rem; }
+        .nav-icon { width: 18px; height: 18px; stroke-width: 2.5; }
 
         .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
         .control-box { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); background: var(--bg-card); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
@@ -95,7 +99,7 @@
 
         /* Dashboard Specific */
         .hero { text-align: center; margin-bottom: 40px; }
-        .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; background: linear-gradient(90deg, #00f0ff, #b148d2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; background: linear-gradient(90deg, #00f0ff, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero p { color: var(--text-muted); font-size: 0.95rem; }
 
         .featured-banner {
@@ -103,13 +107,12 @@
             border: 1px solid rgba(0, 240, 255, 0.2);
             border-radius: 16px; padding: 30px; display: flex; gap: 24px; align-items: flex-start; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
-        .banner-icon { width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); border-radius: 16px; display: grid; place-items: center; font-size: 28px; color: #000; flex-shrink: 0; }
+        .banner-icon { width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); border-radius: 16px; display: grid; place-items: center; color: #000; flex-shrink: 0; }
         .banner-content h2 { font-size: 1.25rem; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
         .badge { font-size: 0.65rem; background: rgba(0, 230, 118, 0.15); color: var(--accent-green); padding: 4px 8px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(0, 230, 118, 0.3); }
         .banner-content p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 16px; }
         .feature-list { display: flex; gap: 16px; font-size: 0.8rem; color: var(--text-muted); }
         .feature-list span { display: flex; align-items: center; gap: 6px; }
-        .feature-list span::before { content: '✓'; color: var(--accent-cyan); font-weight: bold; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .tool-card {
@@ -117,7 +120,7 @@
             display: flex; flex-direction: column; align-items: center; gap: 12px;
         }
         .tool-card:hover { border-color: rgba(0, 240, 255, 0.4); transform: translateY(-4px); background: #1a1e2d; box-shadow: 0 8px 24px rgba(0, 240, 255, 0.05); }
-        .tool-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.03); border-radius: 12px; display: grid; place-items: center; font-size: 24px; margin-bottom: 8px; }
+        .tool-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.03); border-radius: 12px; display: grid; place-items: center; margin-bottom: 8px; }
         
         .tool-card h3 { font-size: 1.05rem; font-weight: 600; }
         .tool-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
@@ -130,64 +133,71 @@
 </head>
 <body>
 
-    <!-- Sidebar (Eita shob page e thakbe) -->
+    <!-- Sidebar -->
     <aside class="sidebar">
         <a href="index.html" class="brand">
-            <div class="brand-icon">V</div>
-            <span>VAULT</span>
+            <div class="brand-icon"><i data-lucide="cpu" style="width: 20px; height: 20px;"></i></div>
+            <span>Masum Automation</span>
         </a>
 
-        <div class="user-badge">Public User</div>
+        <div class="user-badge">Public Workspace</div>
 
         <div class="nav-label">Navigation</div>
-        <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span> Welcome</a>
+        <a href="index.html" class="nav-item active">
+            <i data-lucide="home" class="nav-icon"></i> Welcome
+        </a>
 
         <div class="nav-label">Tool Suite</div>
-        <a href="uid_extractor.html" class="nav-item"><span class="nav-icon">🔍</span> UID Extractor</a>
-        <a href="cookies_converter.html" class="nav-item"><span class="nav-icon">🍪</span> Cookies Converter</a>
-        <a href="error_filter.html" class="nav-item"><span class="nav-icon">⚡</span> Error Filter Pro</a>
+        <a href="uid_extractor.html" class="nav-item">
+            <i data-lucide="scan-line" class="nav-icon" style="color: var(--icon-orange);"></i> UID Extractor
+        </a>
+        <a href="cookies_converter.html" class="nav-item">
+            <i data-lucide="file-json-2" class="nav-icon" style="color: var(--icon-red);"></i> Cookies Converter
+        </a>
+        <a href="error_filter.html" class="nav-item">
+            <i data-lucide="zap" class="nav-icon" style="color: var(--accent-green);"></i> Error Filter Pro
+        </a>
 
         <div class="sidebar-bottom">
             <div class="control-box"><span>Live Active</span> <span style="color: var(--text-main); font-weight:bold;">1</span></div>
             <div class="control-box"><span>Theme</span> <span>Dark ▼</span></div>
-            <div class="control-box"><span>Accent</span> <span style="color: var(--accent-cyan);">Cyan ▼</span></div>
         </div>
     </aside>
 
     <div class="main-wrapper">
         <main class="main-content">
             <div class="hero">
-                <h1>Welcome to VAULT</h1>
+                <h1>Welcome to MasumHub Workspace</h1>
                 <p>Your centralized workspace for Data Filtering, Report Checking, and Pro Automation.</p>
                 <p style="color: var(--accent-cyan); font-size: 0.85rem; margin-top: 8px;">← Please select a tool from the sidebar to begin.</p>
             </div>
 
             <div class="featured-banner">
-                <div class="banner-icon">🚀</div>
+                <div class="banner-icon"><i data-lucide="server" style="width: 32px; height: 32px;"></i></div>
                 <div class="banner-content">
-                    <h2>Smart Network Tools <span class="badge">V1.0 ACTIVE</span></h2>
+                    <h2>Smart Network Tools <span class="badge">V2.0 ACTIVE</span></h2>
                     <p>The ultimate automation system that merges data processing, cookie formatting, and advanced error filtering into a single workspace. Features live updates, local browser processing, and clean execution modes.</p>
                     <div class="feature-list">
-                        <span>Local Processing</span>
-                        <span>Auto-formatting</span>
-                        <span>High-speed Filtering</span>
+                        <span><i data-lucide="check-circle" style="width: 14px; color: var(--accent-cyan);"></i> Local Processing</span>
+                        <span><i data-lucide="check-circle" style="width: 14px; color: var(--accent-cyan);"></i> Auto-formatting</span>
+                        <span><i data-lucide="check-circle" style="width: 14px; color: var(--accent-cyan);"></i> High-speed Filtering</span>
                     </div>
                 </div>
             </div>
 
             <div class="grid">
                 <a href="uid_extractor.html" class="tool-card">
-                    <div class="tool-icon" style="color: #ff9800;">🔍</div>
+                    <div class="tool-icon"><i data-lucide="scan-line" style="width: 28px; height: 28px; color: var(--icon-orange);"></i></div>
                     <h3>UID Extractor</h3>
                     <p>Extract unique user IDs from raw Facebook cookies instantly.</p>
                 </a>
                 <a href="cookies_converter.html" class="tool-card">
-                    <div class="tool-icon" style="color: #f44336;">🍪</div>
+                    <div class="tool-icon"><i data-lucide="file-json-2" style="width: 28px; height: 28px; color: var(--icon-red);"></i></div>
                     <h3>Cookies Converter</h3>
                     <p>Convert messy JSON cookies into clean DATR string format.</p>
                 </a>
                 <a href="error_filter.html" class="tool-card">
-                    <div class="tool-icon" style="color: #00e676;">⚡</div>
+                    <div class="tool-icon"><i data-lucide="zap" style="width: 28px; height: 28px; color: var(--accent-green);"></i></div>
                     <h3>Error Filter Pro</h3>
                     <p>Sort and organize account records by their error status.</p>
                 </a>
@@ -195,14 +205,18 @@
         </main>
 
         <footer class="footer">
-            <div>VAULT Automation Suite</div>
+            <div>Masum Automation Suite</div>
             <div class="footer-links">
-                <a href="#">🔵 Telegram</a>
-                <a href="#">🛡️ Support</a>
-                <span style="margin-left:16px;">© 2026 VAULT. All rights reserved.</span>
+                <a href="#"><i data-lucide="send" style="width: 14px;"></i> Telegram</a>
+                <a href="#"><i data-lucide="shield-question" style="width: 14px;"></i> Support</a>
+                <span style="margin-left:16px;">© 2026 MasumHub. All rights reserved.</span>
             </div>
         </footer>
     </div>
 
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
