@@ -1,86 +1,170 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UID Extractor</title>
-<style>
-:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#172033;background:#f5f6fa}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px}
-.panel{width:min(760px,100%);background:#fff;border:1px solid #e7eaf0;border-radius:16px;padding:26px;box-shadow:0 16px 48px rgba(25,35,60,.08)}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-h1{font-size:19px;letter-spacing:-.35px;margin:0;font-weight:700}
-.status{font-size:12px;color:#64748b;background:#f1f5f9;border-radius:20px;padding:5px 10px}
-textarea{display:block;width:100%;min-height:220px;resize:vertical;border:1px solid #dce1e9;border-radius:10px;background:#fcfcfd;padding:14px 15px;color:#202b3c;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;outline:none;transition:border-color .15s,box-shadow .15s}
-textarea:focus{border-color:#6479dc;box-shadow:0 0 0 3px rgba(100,121,220,.12);background:#fff}
-textarea::placeholder{color:#a0a8b6}
-.actions{display:flex;gap:10px;margin-top:13px}
-button{height:40px;padding:0 16px;border:0;border-radius:9px;font-size:13px;font-weight:650;cursor:pointer;transition:background .15s,transform .15s}
-button:active{transform:translateY(1px)}
-.primary{background:#4058c9;color:white}.primary:hover{background:#344bb6}
-.secondary{background:#f0f2f6;color:#354052}.secondary:hover{background:#e7eaf0}
-.output-wrap{margin-top:22px;border:1px solid #e5e8ef;border-radius:11px;overflow:hidden}
-.output-head{height:48px;padding:0 13px 0 15px;display:flex;align-items:center;justify-content:space-between;background:#fafbfc;border-bottom:1px solid #e9ecf2}
-.output-title{font-size:13px;font-weight:650;color:#354052}
-.count{margin-left:7px;color:#8a94a5;font-weight:500}
-.copy{height:31px;padding:0 12px;font-size:12px}
-#output{min-height:78px;max-height:260px;overflow:auto;padding:13px 15px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;color:#202b3c}
-.empty{color:#a0a8b6}
-@media(max-width:520px){body{padding:14px}.panel{padding:18px;border-radius:13px}textarea{min-height:190px}.actions button{flex:1}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UID Extractor - VAULT</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-main: #0b0f19;
+            --bg-surface: #121624;
+            --bg-card: #181c2a;
+            --bg-input: #0e111a;
+            --border: #23283b;
+            --text-main: #ffffff;
+            --text-muted: #8b94a5;
+            --accent-cyan: #00f0ff;
+            --accent-green: #00e676;
+            --accent-blue: #3b82f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Unified Sidebar (Same as Dashboard) */
+        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; flex-shrink: 0; z-index: 10; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 1.25rem; font-weight: 800; color: var(--text-main); text-decoration: none; margin-bottom: 24px; padding: 0 8px; }
+        .brand-icon { width: 32px; height: 32px; background: var(--accent-cyan); border-radius: 8px; display: grid; place-items: center; color: #000; font-size: 18px; }
+        .user-badge { background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); color: var(--accent-green); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 30px; }
+        .user-badge::before { content: ''; width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); }
+        .nav-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin: 10px 8px; letter-spacing: 1px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; color: var(--text-muted); text-decoration: none; border-radius: 8px; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; margin-bottom: 4px; }
+        .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
+        .nav-item.active { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); font-weight: 600; border: 1px solid rgba(0, 240, 255, 0.2); }
+        .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .control-box { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); background: var(--bg-card); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
+        
+        /* Unified Main Layout & Footer */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .main-content { flex: 1; overflow-y: auto; padding: 40px; display: flex; justify-content: center; align-items: flex-start; }
+        .footer { background: var(--bg-surface); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); }
+        .footer-links a { color: var(--text-muted); text-decoration: none; margin-left: 16px; display: inline-flex; align-items: center; gap: 4px; }
+
+        /* --- Tool Specific Styles (Integrated into Dark Theme) --- */
+        .panel { width: min(760px, 100%); background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        h1.tool-title { font-size: 1.2rem; margin: 0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        h1.tool-title span { color: var(--text-muted); font-size: 1.1rem; }
+        .status-badge { font-size: 11px; color: var(--accent-cyan); background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 20px; padding: 5px 12px; text-transform: uppercase; font-weight: 600; }
+        
+        textarea { display: block; width: 100%; min-height: 180px; resize: vertical; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-input); padding: 14px 15px; color: var(--text-main); font: 13px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; outline: none; transition: all 0.2s; }
+        textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1); }
+        textarea::placeholder { color: #4b5563; }
+        
+        .actions { display: flex; gap: 10px; margin-top: 16px; }
+        button { height: 42px; padding: 0 20px; border: 1px solid transparent; border-radius: 8px; font-size: 13px; font-weight: 650; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        button:active { transform: translateY(1px); }
+        .primary { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); border-color: rgba(0, 240, 255, 0.3); flex: 1; }
+        .primary:hover { background: rgba(0, 240, 255, 0.2); }
+        .secondary { background: var(--bg-input); color: var(--text-muted); border-color: var(--border); }
+        .secondary:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
+        
+        .output-wrap { margin-top: 24px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg-input); }
+        .output-head { height: 46px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); border-bottom: 1px solid var(--border); }
+        .output-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .count { margin-left: 8px; color: var(--accent-green); background: rgba(0, 230, 118, 0.1); padding: 2px 8px; border-radius: 12px; font-weight: 700; }
+        .copy { height: 28px; padding: 0 12px; font-size: 11px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
+        
+        #output { min-height: 78px; max-height: 200px; overflow: auto; padding: 16px; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.8 ui-monospace, Consolas, monospace; color: var(--text-main); }
+        .empty { color: #4b5563 !important; }
+    </style>
 </head>
 <body>
-<main class="panel">
-  <div class="top">
-    <h1>UID Extractor</h1>
-    <span class="status" id="status">Ready</span>
-  </div>
-  <textarea id="cookies" spellcheck="false" placeholder="Paste cookies here..."></textarea>
-  <div class="actions">
-    <button class="primary" id="extract">Extract UID</button>
-    <button class="secondary" id="clear">Clear</button>
-  </div>
-  <section class="output-wrap">
-    <div class="output-head">
-      <div class="output-title">UIDs <span class="count" id="count">0</span></div>
-      <button class="secondary copy" id="copy">Copy All</button>
+
+    <!-- Unified Sidebar -->
+    <aside class="sidebar">
+        <a href="index.html" class="brand"><div class="brand-icon">V</div><span>VAULT</span></a>
+        <div class="user-badge">Public User</div>
+        <div class="nav-label">Navigation</div>
+        <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span> Welcome</a>
+        <div class="nav-label">Tool Suite</div>
+        <a href="uid_extractor.html" class="nav-item active"><span class="nav-icon">🔍</span> UID Extractor</a>
+        <a href="cookies_converter.html" class="nav-item"><span class="nav-icon">🍪</span> Cookies Converter</a>
+        <a href="error_filter.html" class="nav-item"><span class="nav-icon">⚡</span> Error Filter Pro</a>
+        <div class="sidebar-bottom">
+            <div class="control-box"><span>Live Active</span> <span style="color: var(--text-main); font-weight:bold;">1</span></div>
+            <div class="control-box"><span>Theme</span> <span>Dark ▼</span></div>
+            <div class="control-box"><span>Accent</span> <span style="color: var(--accent-cyan);">Cyan ▼</span></div>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <main class="main-content">
+            
+            <!-- Specific Tool Content Wrapper -->
+            <div class="panel">
+                <div class="top">
+                    <h1 class="tool-title"><span>🔍</span> UID Extractor</h1>
+                    <span class="status-badge" id="status">Ready</span>
+                </div>
+                
+                <textarea id="cookies" spellcheck="false" placeholder="Paste raw cookies here..."></textarea>
+                
+                <div class="actions">
+                    <button class="primary" id="extract">Extract UID</button>
+                    <button class="secondary" id="clear">Clear</button>
+                </div>
+                
+                <section class="output-wrap">
+                    <div class="output-head">
+                        <div class="output-title">Extracted UIDs <span class="count" id="count">0</span></div>
+                        <button class="secondary copy" id="copy">Copy All</button>
+                    </div>
+                    <div id="output" class="empty">UIDs will appear here</div>
+                </section>
+            </div>
+
+        </main>
+
+        <footer class="footer">
+            <div>VAULT Automation Suite</div>
+            <div class="footer-links">
+                <a href="#">🔵 Telegram</a>
+                <a href="#">🛡️ Support</a>
+                <span style="margin-left:16px;">© 2026 VAULT. All rights reserved.</span>
+            </div>
+        </footer>
     </div>
-    <div id="output" class="empty">UIDs will appear here</div>
-  </section>
-</main>
-<script>
-(() => {
- const input=document.getElementById('cookies');
- const output=document.getElementById('output');
- const count=document.getElementById('count');
- const status=document.getElementById('status');
- let uids=[];
- function extract(){
-   const matches=[...input.value.matchAll(/(?:^|[;|,\s])c_user\s*=\s*["']?(\d+)/g)];
-   uids=[...new Set(matches.map(m=>m[1]))];
-   count.textContent=uids.length;
-   output.textContent=uids.length?uids.join('\n'):'No UID found';
-   output.classList.toggle('empty',!uids.length);
-   status.textContent=uids.length?'Completed':'No results';
- }
- document.getElementById('extract').addEventListener('click',extract);
- document.getElementById('clear').addEventListener('click',()=>{
-   input.value='';uids=[];count.textContent='0';
-   output.textContent='UIDs will appear here';output.classList.add('empty');
-   status.textContent='Ready';input.focus();
- });
- document.getElementById('copy').addEventListener('click',async()=>{
-   if(!uids.length)return;
-   try{
-     await navigator.clipboard.writeText(uids.join('\n'));
-     const b=document.getElementById('copy');b.textContent='Copied';
-     setTimeout(()=>b.textContent='Copy All',1100);
-   }catch{
-     status.textContent='Select to copy';
-   }
- });
-})();
-</script>
+
+    <!-- Original Tool Script (Unchanged) -->
+    <script>
+    (() => {
+        const input=document.getElementById('cookies');
+        const output=document.getElementById('output');
+        const count=document.getElementById('count');
+        const status=document.getElementById('status');
+        let uids=[];
+        
+        function extract(){
+            const matches=[...input.value.matchAll(/(?:^|[;|,\s])c_user\s*=\s*["']?(\d+)/g)];
+            uids=[...new Set(matches.map(m=>m[1]))];
+            count.textContent=uids.length;
+            output.textContent=uids.length?uids.join('\n'):'No UID found';
+            output.classList.toggle('empty',!uids.length);
+            status.textContent=uids.length?'Completed':'No results';
+        }
+        
+        document.getElementById('extract').addEventListener('click',extract);
+        document.getElementById('clear').addEventListener('click',()=>{
+            input.value='';uids=[];count.textContent='0';
+            output.textContent='UIDs will appear here';output.classList.add('empty');
+            status.textContent='Ready';input.focus();
+        });
+        
+        document.getElementById('copy').addEventListener('click',async()=>{
+            if(!uids.length)return;
+            try{
+                await navigator.clipboard.writeText(uids.join('\n'));
+                const b=document.getElementById('copy');b.textContent='Copied';
+                setTimeout(()=>b.textContent='Copy All',1100);
+            }catch{
+                status.textContent='Select to copy';
+            }
+        });
+    })();
+    </script>
 </body>
 </html>
