@@ -9,26 +9,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         :root {
-            --bg-main: #0b0f19;
-            --bg-surface: #121624;
-            --bg-card: #181c2a;
-            --bg-input: #0e111a;
-            --border: #23283b;
-            --text-main: #ffffff;
-            --text-muted: #8b94a5;
-            --accent-cyan: #00f0ff;
-            --accent-green: #00e676;
-            --accent-blue: #3b82f6;
-            --icon-orange: #ff9800;
-            --icon-red: #f44336;
-            --danger: #ef4444;
+            --bg-main: #0b0f19; --bg-surface: #121624; --bg-card: #181c2a; --bg-input: #0e111a;
+            --border: #23283b; --text-main: #ffffff; --text-muted: #8b94a5;
+            --accent-cyan: #00f0ff; --accent-green: #00e676; --accent-blue: #3b82f6;
+            --icon-orange: #ff9800; --icon-red: #f44336; --icon-teal: #14b8a6; --danger: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Unified Sidebar */
-        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; flex-shrink: 0; z-index: 10; }
+        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; flex-shrink: 0; z-index: 50; transition: left 0.3s ease; }
         .brand { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 800; color: var(--text-main); text-decoration: none; margin-bottom: 24px; padding: 0 8px; }
         .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); border-radius: 8px; display: grid; place-items: center; color: #000; }
         .user-badge { background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); color: var(--accent-green); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 30px; }
@@ -39,82 +29,92 @@
         .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
         .nav-item.active { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); font-weight: 600; border: 1px solid rgba(0, 240, 255, 0.2); border-left: 3px solid var(--accent-cyan); }
         .nav-icon { width: 18px; height: 18px; stroke-width: 2.5; }
-
         .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
         .control-box { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); background: var(--bg-card); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
         
-        /* Unified Main Layout & Footer */
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        /* Mobile Elements */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 40; backdrop-filter: blur(2px); }
+        .mobile-header { display: none; background: var(--bg-surface); padding: 16px 20px; border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; z-index: 20; }
+        .menu-btn { background: transparent; border: none; color: var(--text-main); cursor: pointer; display: grid; place-items: center; padding: 4px; border-radius: 6px; }
+        .menu-btn:hover { background: rgba(255,255,255,0.1); }
+
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         .main-content { flex: 1; overflow-y: auto; padding: 40px; display: flex; justify-content: center; align-items: flex-start; }
         .footer { background: var(--bg-surface); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); }
-        .footer-links a { color: var(--text-muted); text-decoration: none; margin-left: 16px; display: inline-flex; align-items: center; gap: 4px; }
+        .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
 
-        /* --- Tool Specific Styles --- */
+        /* Tool Styles */
         .panel-container { max-width: 720px; width: 100%; display: flex; flex-direction: column; gap: 16px; }
         .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        
         .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
         h1.tool-title { font-size: 1.2rem; margin: 0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .tool-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
         
         .tabs { display: flex; gap: 4px; background: var(--bg-input); padding: 4px; border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--border); }
-        .tab-btn { flex: 1; padding: 10px 12px; border: none; background: transparent; color: var(--text-muted); border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .tab-btn { flex: 1; padding: 10px 12px; border: none; background: transparent; color: var(--text-muted); border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .tab-btn.active { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        textarea { width: 100%; height: 160px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 14px; color: var(--text-main); font-family: 'SF Mono', monospace; font-size: 0.8rem; resize: vertical; outline: none; transition: border-color 0.2s; }
+        textarea { width: 100%; height: 160px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 14px; color: var(--text-main); font-family: 'SF Mono', monospace; font-size: 0.8rem; resize: vertical; outline: none; }
         textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1); }
         
-        .file-upload { border: 1.5px dashed var(--border); border-radius: 8px; padding: 40px 16px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; background: var(--bg-input); }
-        .file-upload:hover, .file-upload.dragover { border-color: var(--accent-cyan); background: rgba(0, 240, 255, 0.05); }
+        .file-upload { border: 1.5px dashed var(--border); border-radius: 8px; padding: 40px 16px; text-align: center; cursor: pointer; position: relative; background: var(--bg-input); }
         .file-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
         .file-upload p { color: var(--text-muted); font-size: 0.875rem; margin-top: 10px; }
         .filename { margin-top: 8px; color: var(--accent-cyan); font-weight: 500; font-size: 0.8rem; }
 
         .actions { display: flex; gap: 10px; margin-top: 16px; }
-        button { height: 42px; padding: 0 20px; border: 1px solid transparent; border-radius: 8px; font-size: 13px; font-weight: 650; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        button:active { transform: translateY(1px); }
+        button { height: 42px; padding: 0 20px; border: 1px solid transparent; border-radius: 8px; font-size: 13px; font-weight: 650; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .primary { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); border-color: rgba(0, 240, 255, 0.3); flex: 1; }
-        .primary:hover { background: rgba(0, 240, 255, 0.2); }
         .secondary { background: var(--bg-input); color: var(--text-muted); border-color: var(--border); }
-        .secondary:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
         .success { background: rgba(0, 230, 118, 0.1); color: var(--accent-green); border-color: rgba(0, 230, 118, 0.3); width: 100%; margin-top: 12px; }
-        .success:hover { background: rgba(0, 230, 118, 0.2); }
 
         .result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .result-title { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
         .result-count { font-size: 0.8rem; color: var(--accent-green); background: rgba(0, 230, 118, 0.1); padding: 2px 8px; border-radius: 12px; font-weight: 700; }
-        
         .result-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 14px; height: 200px; overflow-y: auto; word-break: break-all; white-space: pre-wrap; font-family: 'SF Mono', monospace; font-size: 0.78rem; color: var(--accent-cyan); line-height: 1.6; }
         .result-box:empty::before { content: "Result will appear here..."; color: #4b5563; }
-        
         .status { margin-top: 12px; font-size: 0.8rem; min-height: 20px; display: flex; align-items: center; gap: 6px; }
         .status.success-text { color: var(--accent-green); }
         .status.error-text { color: var(--danger); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; left: -280px; top: 0; bottom: 0; height: 100vh; box-shadow: 10px 0 20px rgba(0,0,0,0.5); }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.active { display: block; }
+            .main-content { padding: 20px 16px; display: block;}
+            .panel { padding: 16px; }
+            .top { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .actions { flex-direction: column; width: 100%; }
+            .actions button, .tabs { width: 100%; }
+            .footer { flex-direction: column; gap: 12px; text-align: center; }
+            .footer-links { justify-content: center; }
+            .footer-links span { width: 100%; display: block; margin: 8px 0 0 0 !important; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Unified Sidebar -->
-    <aside class="sidebar">
-        <a href="index.html" class="brand">
-            <div class="brand-icon"><i data-lucide="cpu" style="width: 20px; height: 20px;"></i></div>
-            <span>Masum Automation</span>
-        </a>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <a href="index.html" class="brand"><div class="brand-icon"><i data-lucide="cpu" style="width: 20px; height: 20px;"></i></div><span>Masum Automation</span></a>
         <div class="user-badge">Public Workspace</div>
+        
         <div class="nav-label">Navigation</div>
         <a href="index.html" class="nav-item"><i data-lucide="home" class="nav-icon"></i> Welcome</a>
+        
         <div class="nav-label">Tool Suite</div>
-        <a href="uid_extractor.html" class="nav-item">
-            <i data-lucide="scan-line" class="nav-icon" style="color: var(--icon-orange);"></i> UID Extractor
-        </a>
-        <a href="cookies_converter.html" class="nav-item active">
-            <i data-lucide="file-json-2" class="nav-icon" style="color: var(--icon-red);"></i> Cookies Converter
-        </a>
-        <a href="error_filter.html" class="nav-item">
-            <i data-lucide="zap" class="nav-icon" style="color: var(--accent-green);"></i> Error Filter Pro
-        </a>
+        <a href="uid_extractor.html" class="nav-item"><i data-lucide="scan-line" class="nav-icon" style="color: var(--icon-orange);"></i> UID Extractor</a>
+        <a href="cookies_converter.html" class="nav-item active"><i data-lucide="file-json-2" class="nav-icon" style="color: var(--icon-red);"></i> Cookies Converter</a>
+        <a href="error_filter.html" class="nav-item"><i data-lucide="zap" class="nav-icon" style="color: var(--accent-green);"></i> Error Filter Pro</a>
+        
+        <div class="nav-label">External Tools</div>
+        <a href="uid_checker.html" class="nav-item"><i data-lucide="shield-check" class="nav-icon" style="color: var(--icon-teal);"></i> SureSMS UID Checker</a>
+        
         <div class="sidebar-bottom">
             <div class="control-box"><span>Live Active</span> <span style="color: var(--text-main); font-weight:bold;">1</span></div>
             <div class="control-box"><span>Theme</span> <span>Dark ▼</span></div>
@@ -122,9 +122,14 @@
     </aside>
 
     <div class="main-wrapper">
+        <div class="mobile-header">
+            <button class="menu-btn" onclick="toggleSidebar()"><i data-lucide="menu" style="width: 24px; height: 24px;"></i></button>
+            <span style="font-weight: 700; font-size: 1.1rem;">Masum Automation</span>
+            <div style="width: 24px;"></div>
+        </div>
+
         <main class="main-content">
             <div class="panel-container">
-                <!-- Input Panel -->
                 <div class="panel">
                     <div class="top">
                         <div>
@@ -132,16 +137,13 @@
                             <div class="tool-subtitle">Facebook Cookie Converter</div>
                         </div>
                     </div>
-
                     <div class="tabs">
                         <button class="tab-btn active" data-tab="text"><i data-lucide="clipboard-paste" style="width: 16px;"></i> Paste JSON</button>
                         <button class="tab-btn" data-tab="file"><i data-lucide="upload-cloud" style="width: 16px;"></i> Upload File</button>
                     </div>
-
                     <div id="text-tab" class="tab-content active">
                         <textarea id="jsonInput" placeholder="Paste one or multiple cookie JSON arrays here..."></textarea>
                     </div>
-
                     <div id="file-tab" class="tab-content">
                         <div class="file-upload" id="dropZone">
                             <input type="file" id="fileInput" accept=".json,application/json,text/plain" multiple>
@@ -150,14 +152,12 @@
                             <div class="filename" id="fileName"></div>
                         </div>
                     </div>
-
                     <div class="actions">
                         <button class="primary" onclick="convert()"><i data-lucide="play" style="width: 16px;"></i> Convert Cookies</button>
                         <button class="secondary" onclick="clearAll()"><i data-lucide="trash-2" style="width: 16px;"></i> Clear</button>
                     </div>
                 </div>
 
-                <!-- Result Panel -->
                 <div class="panel">
                     <div class="result-header">
                         <div class="result-title"><i data-lucide="list-checks" style="width: 16px;"></i> Result</div>
@@ -177,13 +177,17 @@
             <div class="footer-links">
                 <a href="#"><i data-lucide="send" style="width: 14px;"></i> Telegram</a>
                 <a href="#"><i data-lucide="shield-question" style="width: 14px;"></i> Support</a>
-                <span style="margin-left:16px;">© 2026 MasumHub. All rights reserved.</span>
+                <span style="margin-left:0;">© 2026 MasumHub. All rights reserved.</span>
             </div>
         </footer>
     </div>
 
     <script>
         lucide.createIcons();
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
 
         // Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -201,13 +205,8 @@
         const fileName = document.getElementById('fileName');
         let uploadedFilesContent = [];
 
-        ['dragenter', 'dragover'].forEach(evt => {
-            dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-        });
-        ['dragleave', 'drop'].forEach(evt => {
-            dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.remove('dragover'); });
-        });
-
+        ['dragenter', 'dragover'].forEach(evt => { dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('dragover'); }); });
+        ['dragleave', 'drop'].forEach(evt => { dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.remove('dragover'); }); });
         dropZone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
         fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 
@@ -228,7 +227,7 @@
         function extractCookieArrays(text) {
             const results = [];
             if (!text || !text.trim()) return results;
-            let cleaned = text.replace(/^\s*\|+\s*/gm, '').replace(/\s*\|+\s*$/gm, '').replace(/^\s*-{3,}\s*$/gm, '').replace(/\Vert{}\s*\Vert{}/g, '').replace(/""/g, '"').replace(/^["']+\vert{}["']+$/gm, '').trim();
+            let cleaned = text.replace(/^\s*\|+\s*/gm, '').replace(/\s*\|+\s*$/gm, '').replace(/^\s*-{3,}\s*$/gm, '').replace(/\|\s*\|/g, '').replace(/""/g, '"').replace(/^["']+|["']+$/gm, '').trim();
             try {
                 const data = JSON.parse(cleaned);
                 if (Array.isArray(data)) { results.push(data); return results; }
@@ -253,10 +252,7 @@
                             depth--;
                             if (depth === 0) {
                                 const candidate = cleaned.slice(start, j + 1);
-                                try {
-                                    const arr = JSON.parse(candidate);
-                                    if (Array.isArray(arr) && arr.length > 0) { results.push(arr); }
-                                } catch (_) {}
+                                try { const arr = JSON.parse(candidate); if (Array.isArray(arr) && arr.length > 0) { results.push(arr); } } catch (_) {}
                                 i = j; break;
                             }
                         }
@@ -270,8 +266,7 @@
         function convertToDatrString(cookies) {
             let list = cookies.filter(c => c && c.name && c.value !== undefined);
             list.sort((a, b) => {
-                const ia = preferredOrder.indexOf(a.name);
-                const ib = preferredOrder.indexOf(b.name);
+                const ia = preferredOrder.indexOf(a.name); const ib = preferredOrder.indexOf(b.name);
                 if (ia === -1 && ib === -1) return 0;
                 if (ia === -1) return 1;
                 if (ib === -1) return -1;
@@ -337,10 +332,7 @@
                 const btn = document.getElementById('copyBtn');
                 btn.innerHTML = '<i data-lucide="check" style="width: 16px;"></i> Copied!';
                 lucide.createIcons();
-                setTimeout(() => {
-                    btn.innerHTML = '<i data-lucide="copy" style="width: 16px;"></i> Copy All';
-                    lucide.createIcons();
-                }, 1800);
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" style="width: 16px;"></i> Copy All'; lucide.createIcons(); }, 1800);
             }).catch(() => {
                 const ta = document.createElement('textarea');
                 ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
