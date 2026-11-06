@@ -9,25 +9,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         :root {
-            --bg-main: #0b0f19;
-            --bg-surface: #121624;
-            --bg-card: #181c2a;
-            --bg-input: #0e111a;
-            --border: #23283b;
-            --text-main: #ffffff;
-            --text-muted: #8b94a5;
-            --accent-cyan: #00f0ff;
-            --accent-green: #00e676;
-            --accent-blue: #3b82f6;
-            --icon-orange: #ff9800;
-            --icon-red: #f44336;
+            --bg-main: #0b0f19; --bg-surface: #121624; --bg-card: #181c2a; --bg-input: #0e111a;
+            --border: #23283b; --text-main: #ffffff; --text-muted: #8b94a5;
+            --accent-cyan: #00f0ff; --accent-green: #00e676; --accent-blue: #3b82f6;
+            --icon-orange: #ff9800; --icon-red: #f44336; --icon-teal: #14b8a6;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Unified Sidebar */
-        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; flex-shrink: 0; z-index: 10; }
+        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; flex-shrink: 0; z-index: 50; transition: left 0.3s ease; }
         .brand { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 800; color: var(--text-main); text-decoration: none; margin-bottom: 24px; padding: 0 8px; }
         .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); border-radius: 8px; display: grid; place-items: center; color: #000; }
         .user-badge { background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); color: var(--accent-green); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 30px; }
@@ -38,20 +29,24 @@
         .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
         .nav-item.active { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); font-weight: 600; border: 1px solid rgba(0, 240, 255, 0.2); border-left: 3px solid var(--accent-cyan); }
         .nav-icon { width: 18px; height: 18px; stroke-width: 2.5; }
-
         .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
         .control-box { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); background: var(--bg-card); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
         
-        /* Unified Main Layout & Footer */
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        /* Mobile Elements */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 40; backdrop-filter: blur(2px); }
+        .mobile-header { display: none; background: var(--bg-surface); padding: 16px 20px; border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; z-index: 20; }
+        .menu-btn { background: transparent; border: none; color: var(--text-main); cursor: pointer; display: grid; place-items: center; padding: 4px; border-radius: 6px; }
+        .menu-btn:hover { background: rgba(255,255,255,0.1); }
+
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         .main-content { flex: 1; overflow-y: auto; padding: 40px; display: flex; justify-content: center; align-items: flex-start; }
         .footer { background: var(--bg-surface); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); }
-        .footer-links a { color: var(--text-muted); text-decoration: none; margin-left: 16px; display: inline-flex; align-items: center; gap: 4px; }
+        .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
 
-        /* --- Tool Specific Styles --- */
+        /* Tool Styles */
         .panel-container { max-width: 1000px; width: 100%; display: flex; flex-direction: column; gap: 24px; }
         .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        
         .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
         h1.tool-title { font-size: 1.2rem; margin: 0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .tool-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
@@ -60,64 +55,70 @@
         .drop.drag { background: rgba(0, 240, 255, 0.05); border-color: var(--accent-cyan); }
         .drop p { font-size: 12px; color: var(--text-muted); margin: 8px 0; }
         .filelabel { border: 1px solid var(--border); border-radius: 6px; background: rgba(255,255,255,0.05); padding: 6px 12px; font-size: 11px; font-weight: 650; cursor: pointer; color: var(--text-main); }
-        .filelabel:hover { background: rgba(255,255,255,0.1); }
         #file { display: none; }
 
-        textarea { display: block; width: 100%; height: 130px; min-height: 100px; padding: 14px; resize: vertical; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-main); font: 12px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; outline: none; transition: border-color 0.2s;}
-        textarea::placeholder { color: #4b5563; }
+        textarea { display: block; width: 100%; height: 130px; min-height: 100px; padding: 14px; resize: vertical; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-input); color: var(--text-main); font: 12px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; outline: none; }
         textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1); }
         
         .actions { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
         .hint { font-size: 11px; color: var(--text-muted); }
         .buttons { display: flex; gap: 10px; }
-        button { height: 42px; padding: 0 20px; border: 1px solid transparent; border-radius: 8px; font-size: 13px; font-weight: 650; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        button:active { transform: translateY(1px); }
+        button { height: 42px; padding: 0 20px; border: 1px solid transparent; border-radius: 8px; font-size: 13px; font-weight: 650; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .primary { background: rgba(0, 230, 118, 0.1); color: var(--accent-green); border-color: rgba(0, 230, 118, 0.3); }
-        .primary:hover { background: rgba(0, 230, 118, 0.2); }
         .secondary { background: var(--bg-input); color: var(--text-muted); border-color: var(--border); }
-        .secondary:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
         button:disabled { opacity: 0.4; cursor: not-allowed; }
-        
         .status { font-size: 12px; color: var(--accent-cyan); min-height: 17px; margin-top: 12px; display: flex; align-items: center; gap: 6px;}
 
         .resultshead { display: flex; align-items: center; justify-content: space-between; margin: 10px 4px 16px; }
         .resultshead strong { font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
-        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
         .res-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column;}
         .cardhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .cardhead b { font-size: 12px; letter-spacing: 0.5px; color: var(--text-muted); }
         .count { font-size: 10px; color: var(--accent-green); background: rgba(0, 230, 118, 0.1); padding: 4px 8px; border-radius: 12px; font-weight: 700; }
-        
-        .output { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; min-height: 80px; max-height: 150px; overflow: auto; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.7 ui-monospace, SFMono-Regular, Consolas, monospace; color: var(--text-main); }
+        .output { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; min-height: 80px; max-height: 150px; overflow: auto; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.7 ui-monospace, Consolas, monospace; color: var(--text-main); }
         .empty { color: #4b5563; }
-        
         .cardfoot { display: flex; justify-content: flex-end; margin-top: 12px; }
         .copy-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-main); height: 32px; font-size: 11px; padding: 0 12px; }
-        .copy-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; left: -280px; top: 0; bottom: 0; height: 100vh; box-shadow: 10px 0 20px rgba(0,0,0,0.5); }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.active { display: block; }
+            .main-content { padding: 20px 16px; display: block; }
+            .panel { padding: 16px; width: 100%; }
+            .top { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .actions, .buttons { flex-direction: column; width: 100%; }
+            .actions button, .buttons button { width: 100%; margin-top: 4px; }
+            .grid { grid-template-columns: 1fr; }
+            .resultshead { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .footer { flex-direction: column; gap: 12px; text-align: center; }
+            .footer-links { justify-content: center; }
+            .footer-links span { width: 100%; display: block; margin: 8px 0 0 0 !important; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Unified Sidebar -->
-    <aside class="sidebar">
-        <a href="index.html" class="brand">
-            <div class="brand-icon"><i data-lucide="cpu" style="width: 20px; height: 20px;"></i></div>
-            <span>Masum Automation</span>
-        </a>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <a href="index.html" class="brand"><div class="brand-icon"><i data-lucide="cpu" style="width: 20px; height: 20px;"></i></div><span>Masum Automation</span></a>
         <div class="user-badge">Public Workspace</div>
+        
         <div class="nav-label">Navigation</div>
         <a href="index.html" class="nav-item"><i data-lucide="home" class="nav-icon"></i> Welcome</a>
+        
         <div class="nav-label">Tool Suite</div>
-        <a href="uid_extractor.html" class="nav-item">
-            <i data-lucide="scan-line" class="nav-icon" style="color: var(--icon-orange);"></i> UID Extractor
-        </a>
-        <a href="cookies_converter.html" class="nav-item">
-            <i data-lucide="file-json-2" class="nav-icon" style="color: var(--icon-red);"></i> Cookies Converter
-        </a>
-        <a href="error_filter.html" class="nav-item active">
-            <i data-lucide="zap" class="nav-icon" style="color: var(--accent-green);"></i> Error Filter Pro
-        </a>
+        <a href="uid_extractor.html" class="nav-item"><i data-lucide="scan-line" class="nav-icon" style="color: var(--icon-orange);"></i> UID Extractor</a>
+        <a href="cookies_converter.html" class="nav-item"><i data-lucide="file-json-2" class="nav-icon" style="color: var(--icon-red);"></i> Cookies Converter</a>
+        <a href="error_filter.html" class="nav-item active"><i data-lucide="zap" class="nav-icon" style="color: var(--accent-green);"></i> Error Filter Pro</a>
+        
+        <div class="nav-label">External Tools</div>
+        <a href="uid_checker.html" class="nav-item"><i data-lucide="shield-check" class="nav-icon" style="color: var(--icon-teal);"></i> SureSMS UID Checker</a>
+        
         <div class="sidebar-bottom">
             <div class="control-box"><span>Live Active</span> <span style="color: var(--text-main); font-weight:bold;">1</span></div>
             <div class="control-box"><span>Theme</span> <span>Dark ▼</span></div>
@@ -125,9 +126,14 @@
     </aside>
 
     <div class="main-wrapper">
+        <div class="mobile-header">
+            <button class="menu-btn" onclick="toggleSidebar()"><i data-lucide="menu" style="width: 24px; height: 24px;"></i></button>
+            <span style="font-weight: 700; font-size: 1.1rem;">Masum Automation</span>
+            <div style="width: 24px;"></div>
+        </div>
+
         <main class="main-content">
             <div class="panel-container">
-                <!-- Importer Panel -->
                 <div class="panel">
                     <div class="top">
                         <div>
@@ -135,7 +141,6 @@
                             <div class="tool-subtitle">Sort records by error status</div>
                         </div>
                     </div>
-                    
                     <div class="drop" id="drop">
                         <i data-lucide="file-text" style="width: 32px; height: 32px; color: var(--text-muted); margin-bottom: 8px;"></i>
                         <b style="font-size: 13px;">Drag & drop your file here</b>
@@ -143,9 +148,7 @@
                         <label class="filelabel" for="file">Choose file</label>
                         <input id="file" type="file" accept=".txt,.md,.csv,.log,text/plain,text/markdown,text/csv">
                     </div>
-                    
                     <textarea id="source" spellcheck="false" placeholder="Paste your records here…"></textarea>
-                    
                     <div class="actions">
                         <span class="hint">Results show number|OTP in pipe format</span>
                         <div class="buttons">
@@ -156,13 +159,11 @@
                     <div class="status" id="status" aria-live="polite"></div>
                 </div>
 
-                <!-- Results Area -->
                 <div>
                     <div class="resultshead">
                         <strong><i data-lucide="layout-grid" style="width: 18px;"></i> Filtered Results</strong>
                         <span class="hint" id="total" style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 20px;">Waiting for input</span>
                     </div>
-                    
                     <div class="grid">
                         <section class="res-card">
                             <div class="cardhead"><b>CAPTCHA FOUND</b><span class="count" id="captchaCount">0</span></div>
@@ -194,27 +195,24 @@
             <div class="footer-links">
                 <a href="#"><i data-lucide="send" style="width: 14px;"></i> Telegram</a>
                 <a href="#"><i data-lucide="shield-question" style="width: 14px;"></i> Support</a>
-                <span style="margin-left:16px;">© 2026 MasumHub. All rights reserved.</span>
+                <span style="margin-left: 0;">© 2026 MasumHub. All rights reserved.</span>
             </div>
         </footer>
     </div>
 
     <script>
     lucide.createIcons();
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
     (()=>{
         const $=id=>document.getElementById(id),keys=["captcha","password","locked","other"];
         let groups=Object.fromEntries(keys.map(k=>[k,[]]));
-        
         const start=/^\s*(?:\|\s*)?(\+?\d{8,18})(?:-(\d+))?(?=\s|[|,:;->]|$)/;
-        const tests={
-            password:/submit(?:ted)?\s*password|submite\s*password|submit\s*your\s*password|password\s*(?:required|confirmation)|enter\s+(?:your\s+)?password/i,
-            captcha:/captcha\s*(?:found|required)?|confirm\s+you(?:'|’)re\s+not\s+a\s+robot|security\s+check.{0,50}captcha/i,
-            locked:/account\s*(?:is\s*)?(?:locked|lock)|locked\s+account|account\s+disabled|temporarily\s+blocked/i
-        };
-        
+        const tests={ password:/submit(?:ted)?\s*password|submite\s*password|submit\s*your\s*password|password\s*(?:required|confirmation)|enter\s+(?:your\s+)?password/i, captcha:/captcha\s*(?:found|required)?|confirm\s+you(?:'|’)re\s+not\s+a\s+robot|security\s+check.{0,50}captcha/i, locked:/account\s*(?:is\s*)?(?:locked|lock)|locked\s+account|account\s+disabled|temporarily\s+blocked/i };
         function kind(text){for(const k of ["password","captcha","locked"])if(tests[k].test(text))return k;return "other"}
         function makeId(m){return m[2] ? `${m[1]}|${m[2]}` : m[1]}
-        
         function render(){
             let total=0;
             for(const k of keys){
@@ -225,11 +223,9 @@
             }
             $("total").textContent=total?`${total} identifiers found`:"No records found";
         }
-        
         function filter(){
             const raw=$("source").value;
             if(!raw.trim()){$("status").innerHTML="<i data-lucide='alert-circle' style='width:14px;'></i> Paste text or add a file first."; lucide.createIcons(); return}
-            
             groups=Object.fromEntries(keys.map(k=>[k,[]]));
             const records=[];let rec=null;
             for(const line of raw.split(/\r?\n/)){
@@ -238,50 +234,31 @@
                 else if(rec)rec.text+="\n"+line;
             }
             if(rec)records.push(rec);
-            
             if(!records.length){
                 for(const block of raw.split(/\n\s*\n/)){
                     const m=block.match(/(?:^|[\s|,;])(\+?\d{8,18})(?:-(\d+))?(?=[\s|,;:->]|$)/);
                     if(m)records.push({id:makeId(m),text:block})
                 }
             }
-            
             const seen=Object.fromEntries(keys.map(k=>[k,new Set()]));
             for(const r of records){const k=kind(r.text);if(!seen[k].has(r.id)){seen[k].add(r.id);groups[k].push(r.id)}}
             render();
             $("status").innerHTML=`<i data-lucide='check-circle' style='width:14px; color:var(--accent-green)'></i> Complete · ${records.length} records scanned`;
             lucide.createIcons();
         }
-        
         $("filter").addEventListener("click",filter);
-        $("clear").addEventListener("click",()=>{
-            $("source").value="";$("file").value="";groups=Object.fromEntries(keys.map(k=>[k,[]]));render();
-            $("status").innerHTML="<i data-lucide='info' style='width:14px;'></i> Cleared";
-            lucide.createIcons();
-        });
-        
-        async function readFile(f){
-            if(!f)return;$("source").value=await f.text();
-            $("status").innerHTML=`<i data-lucide='file-check' style='width:14px;'></i> Loaded ${f.name} · Click Filter records`;
-            lucide.createIcons();
-        }
-        
+        $("clear").addEventListener("click",()=>{ $("source").value="";$("file").value="";groups=Object.fromEntries(keys.map(k=>[k,[]]));render(); $("status").innerHTML="<i data-lucide='info' style='width:14px;'></i> Cleared"; lucide.createIcons(); });
+        async function readFile(f){ if(!f)return;$("source").value=await f.text(); $("status").innerHTML=`<i data-lucide='file-check' style='width:14px;'></i> Loaded ${f.name} · Click Filter records`; lucide.createIcons(); }
         $("file").addEventListener("change",e=>readFile(e.target.files[0]));
         const drop=$("drop");
         ["dragenter","dragover"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add("drag")}));
         ["dragleave","drop"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove("drag")}));
         drop.addEventListener("drop",e=>readFile(e.dataTransfer.files[0]));
-        
         document.querySelectorAll(".copy").forEach(b=>b.addEventListener("click",async()=>{
             try{
-                const a=groups[b.dataset.kind];
-                await navigator.clipboard.writeText(a.join("\n"));
-                $("status").innerHTML=`<i data-lucide='check' style='width:14px;'></i> Copied ${a.length} results`;
-                lucide.createIcons();
-            }catch{
-                $("status").innerHTML="<i data-lucide='alert-circle' style='width:14px;'></i> Clipboard blocked by browser; select the text to copy.";
-                lucide.createIcons();
-            }
+                const a=groups[b.dataset.kind]; await navigator.clipboard.writeText(a.join("\n"));
+                $("status").innerHTML=`<i data-lucide='check' style='width:14px;'></i> Copied ${a.length} results`; lucide.createIcons();
+            }catch{ $("status").innerHTML="<i data-lucide='alert-circle' style='width:14px;'></i> Clipboard blocked by browser; select the text to copy."; lucide.createIcons(); }
         }));
         render();
     })();
