@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SureSMS UID Checker - Masum Automation</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-main: #0b0f19; --bg-surface: #121624; --bg-card: #181c2a; --bg-input: #0e111a;
+            --border: #23283b; --text-main: #ffffff; --text-muted: #8b94a5;
+            --accent-cyan: #00f0ff; --accent-green: #00e676; --accent-blue: #3b82f6;
+            --icon-orange: #ff9800; --icon-red: #f44336; --icon-teal: #14b8a6; --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar Styles */
+        .sidebar { width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; flex-shrink: 0; z-index: 50; transition: left 0.3s ease; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 800; color: var(--text-main); text-decoration: none; margin-bottom: 24px; padding: 0 8px; }
+        .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); border-radius: 8px; display: grid; place-items: center; color: #000; }
+        .user-badge { background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.2); color: var(--accent-green); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 30px; }
+        .user-badge::before { content: ''; width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); }
+        
+        .nav-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin: 10px 8px; letter-spacing: 1px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; color: var(--text-muted); text-decoration: none; border-radius: 8px; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; margin-bottom: 4px; }
+        .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
+        .nav-item.active { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); font-weight: 600; border: 1px solid rgba(0, 240, 255, 0.2); border-left: 3px solid var(--accent-cyan); }
+        .nav-icon { width: 18px; height: 18px; stroke-width: 2.5; }
+        .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .control-box { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); background: var(--bg-card); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border); }
+        
+        /* Mobile Overlay & Header */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 40; backdrop-filter: blur(2px); }
+        .mobile-header { display: none; background: var(--bg-surface); padding: 16px 20px; border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; z-index: 20; }
+        .menu-btn { background: transparent; border: none; color: var(--text-main); cursor: pointer; display: grid; place-items: center; padding: 4px; border-radius: 6px; }
+        .menu-btn:hover { background: rgba(255,255,255,0.1); }
+
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; }
+        .main-content { flex: 1; overflow-y: auto; padding: 40px; display: flex; justify-content: center; align-items: flex-start; }
+        .footer { background: var(--bg-surface); border-top: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+
+        /* --- Tool Specific Styles --- */
+        .panel-container { max-width: 900px; width: 100%; display: flex; flex-direction: column; gap: 20px; }
+        .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        
+        .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+        h1.tool-title { font-size: 1.2rem; margin: 0; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .tool-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+        
+        textarea { display: block; width: 100%; min-height: 160px; resize: vertical; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-input); padding: 14px 15px; color: var(--text-main); font: 13px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; outline: none; transition: all 0.2s; }
+        textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1); }
+        textarea::placeholder { color: #4b5563; }
+        
+        .actions { display: flex; gap: 10px; margin-top: 16px; }
+        button { height: 42px; padding: 0 20px; border: 1px solid transparent; border-radius: 8px; font-size: 13px; font-weight: 650; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        button:active { transform: translateY(1px); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .primary { background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); border-color: rgba(0, 240, 255, 0.3); flex: 1; }
+        .primary:hover:not(:disabled) { background: rgba(0, 240, 255, 0.2); }
+        .secondary { background: var(--bg-input); color: var(--text-muted); border-color: var(--border); }
+        .secondary:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
+        
+        /* Progress & Stats */
+        .progress-wrap { display: none; margin-top: 20px; }
+        .progress-bar { height: 6px; background: var(--bg-input); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue)); width: 0%; transition: width 0.25s ease-out; }
+        .status-text { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 10px; font-weight: 600; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
+        .stat-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; gap: 4px; }
+        .stat-num { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        
+        .s-total .stat-num { color: var(--text-main); }
+        .s-live .stat-num { color: var(--accent-green); }
+        .s-dead .stat-num { color: var(--danger); }
+        .s-error .stat-num { color: var(--icon-orange); }
+
+        /* Results */
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+        .result-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
+        .res-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); }
+        .res-title { font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .live-title { color: var(--accent-green); }
+        .dead-title { color: var(--danger); }
+        .copy-btn { height: 28px; padding: 0 12px; font-size: 11px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .copy-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-main); }
+        
+        .uid-list { padding: 16px; min-height: 180px; max-height: 250px; overflow-y: auto; font-family: 'SF Mono', ui-monospace, Consolas, monospace; font-size: 12px; line-height: 1.7; white-space: pre-wrap; color: var(--text-muted); }
+        .uid-list:empty::before { content: "Waiting for results..."; color: #4b5563; }
+        .uid-list.has-data { color: var(--text-main); }
+
+        .note { margin-top: 20px; padding: 14px 18px; background: rgba(255, 152, 0, 0.05); border: 1px solid rgba(255, 152, 0, 0.2); border-radius: 10px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; display: flex; gap: 12px; align-items: flex-start; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; left: -280px; top: 0; bottom: 0; height: 100vh; box-shadow: 10px 0 20px rgba(0,0,0,0.5); }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.active { display: block; }
+            .main-content { padding: 20px 16px; }
+            .panel { padding: 16px; }
+            .top { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .actions { flex-direction: column; width: 100%; }
+            .actions button { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .results-grid { grid-template-columns: 1fr; }
+            .footer { flex-direction: column; gap: 12px; text-align: center; }
+            .footer-links { justify-content: center; }
+            .footer-links span { width: 100%; display: block; margin: 8px 0 0 0 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <a href="index.html" class="brand">
+            <div class="brand-icon"><i data-lucide="cpu" style="width: 20px; height: 20px;"></i></div>
+            <span>Masum Automation</span>
+        </a>
+        <div class="user-badge">Public Workspace</div>
+        
+        <div class="nav-label">Navigation</div>
+        <a href="index.html" class="nav-item"><i data-lucide="home" class="nav-icon"></i> Welcome</a>
+        
+        <div class="nav-label">Tool Suite</div>
+        <a href="uid_extractor.html" class="nav-item"><i data-lucide="scan-line" class="nav-icon" style="color: var(--icon-orange);"></i> UID Extractor</a>
+        <a href="cookies_converter.html" class="nav-item"><i data-lucide="file-json-2" class="nav-icon" style="color: var(--icon-red);"></i> Cookies Converter</a>
+        <a href="error_filter.html" class="nav-item"><i data-lucide="zap" class="nav-icon" style="color: var(--accent-green);"></i> Error Filter Pro</a>
+        
+        <!-- Re-added External Tools Menu -->
+        <div class="nav-label">External Tools</div>
+        <a href="uid_checker.html" class="nav-item active"><i data-lucide="shield-check" class="nav-icon" style="color: var(--icon-teal);"></i> UID Checker</a>
+        
+        <div class="sidebar-bottom">
+            <div class="control-box"><span>Live Active</span> <span style="color: var(--text-main); font-weight:bold;">1</span></div>
+            <div class="control-box"><span>Theme</span> <span>Dark ▼</span></div>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <!-- Mobile Header -->
+        <div class="mobile-header">
+            <button class="menu-btn" onclick="toggleSidebar()"><i data-lucide="menu" style="width: 24px; height: 24px;"></i></button>
+            <span style="font-weight: 700; font-size: 1.1rem;">Masum Automation</span>
+            <div style="width: 24px;"></div>
+        </div>
+
+        <main class="main-content">
+            <div class="panel-container">
+                <div class="panel">
+                    <div class="top">
+                        <div>
+                            <h1 class="tool-title"><i data-lucide="shield-check" style="color: var(--icon-teal);"></i> Live/Dead Checker</h1>
+                            <div class="tool-subtitle">Check Facebook UID status instantly. No external hosting required.</div>
+                        </div>
+                    </div>
+                    
+                    <textarea id="uidInput" spellcheck="false" placeholder="Paste UIDs here (one per line)...&#10;100092557145369&#10;100008524845352"></textarea>
+                    
+                    <div class="actions">
+                        <button class="primary" id="checkBtn" onclick="startCheck()"><i data-lucide="play" style="width: 16px;"></i> Start Check</button>
+                        <button class="secondary" onclick="clearAll()"><i data-lucide="trash-2" style="width: 16px;"></i> Clear All</button>
+                    </div>
+
+                    <div class="progress-wrap" id="progressWrap">
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <div class="status-text" id="statusText">Processing...</div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box s-total">
+                            <div class="stat-num" id="totalCount">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-box s-live">
+                            <div class="stat-num" id="liveCount">0</div>
+                            <div class="stat-label">Live</div>
+                        </div>
+                        <div class="stat-box s-dead">
+                            <div class="stat-num" id="deadCount">0</div>
+                            <div class="stat-label">Dead</div>
+                        </div>
+                        <div class="stat-box s-error">
+                            <div class="stat-num" id="errorCount">0</div>
+                            <div class="stat-label">Error</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="res-head">
+                            <div class="res-title live-title"><i data-lucide="check-circle" style="width: 16px;"></i> Live UIDs</div>
+                            <button class="copy-btn" onclick="copyList('live', this)"><i data-lucide="copy" style="width: 12px;"></i> Copy</button>
+                        </div>
+                        <div class="uid-list" id="liveList"></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="res-head">
+                            <div class="res-title dead-title"><i data-lucide="x-circle" style="width: 16px;"></i> Dead UIDs</div>
+                            <button class="copy-btn" onclick="copyList('dead', this)"><i data-lucide="copy" style="width: 12px;"></i> Copy</button>
+                        </div>
+                        <div class="uid-list" id="deadList"></div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    <i data-lucide="info" style="width: 20px; color: var(--icon-orange); flex-shrink: 0; margin-top: 2px;"></i>
+                    <div><strong>Note:</strong> This tool utilizes the Github repo `height + width` method to detect if a UID exists on Facebook. It may not separately identify banned or disabled accounts if Facebook still returns a valid picture footprint for them.</div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div>Masum Automation Suite</div>
+            <div class="footer-links">
+                <a href="#"><i data-lucide="send" style="width: 14px;"></i> Telegram</a>
+                <a href="#"><i data-lucide="shield-question" style="width: 14px;"></i> Support</a>
+                <span style="margin-left: 0;">© 2026 MasumHub. All rights reserved.</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        let liveUIDs = [];
+        let deadUIDs = [];
+        let errorUIDs = [];
+        let isChecking = false;
+
+        async function startCheck() {
+            if (isChecking) return;
+
+            const input = document.getElementById('uidInput').value.trim();
+            if (!input) {
+                alert('Please enter some UIDs first!');
+                return;
+            }
+
+            // UID Extraction & Duplicate Removal
+            let uids = input
+                .split(/[\n,\s]+/)
+                .map(line => {
+                    const m = line.match(/(?:id=)?(\d{5,})/);
+                    return m ? m[1] : null;
+                })
+                .filter(Boolean);
+
+            uids = [...new Set(uids)];
+
+            if (uids.length === 0) {
+                alert('No valid UIDs found!');
+                return;
+            }
+
+            // Reset States
+            liveUIDs = [];
+            deadUIDs = [];
+            errorUIDs = [];
+            updateUI();
+            isChecking = true;
+
+            const checkBtn = document.getElementById('checkBtn');
+            checkBtn.disabled = true;
+            checkBtn.innerHTML = '<i data-lucide="loader-2" style="width: 16px; animation: spin 1s linear infinite;"></i> Checking...';
+            lucide.createIcons();
+            
+            document.getElementById('progressWrap').style.display = 'block';
+            document.getElementById('totalCount').textContent = uids.length;
+
+            let completed = 0;
+            const concurrency = 12;
+
+            async function checkOne(uid) {
+                try {
+                    const url = `https://graph2.facebook.com/v3.3/${uid}/picture?redirect=0`;
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), 9000);
+
+                    const res = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timer);
+
+                    const text = await res.text();
+                    const lower = text.toLowerCase();
+
+                    if (lower.includes('height') && lower.includes('width')) {
+                        liveUIDs.push(uid);
+                    } else {
+                        deadUIDs.push(uid);
+                    }
+                } catch (err) {
+                    errorUIDs.push(uid);
+                }
+
+                completed++;
+                const percent = Math.round((completed / uids.length) * 100);
+                document.getElementById('progressFill').style.width = percent + '%';
+                document.getElementById('statusText').textContent = `${completed} / ${uids.length} (${percent}%) processed`;
+                updateUI();
+            }
+
+            // Concurrency Queue
+            const queue = [...uids];
+            const workers = Array(Math.min(concurrency, queue.length)).fill().map(async () => {
+                while (queue.length) {
+                    const uid = queue.shift();
+                    await checkOne(uid);
+                    await new Promise(r => setTimeout(r, 120)); // Short delay to prevent rate limits
+                }
+            });
+
+            await Promise.all(workers);
+
+            isChecking = false;
+            checkBtn.disabled = false;
+            checkBtn.innerHTML = '<i data-lucide="play" style="width: 16px;"></i> Check Again';
+            lucide.createIcons();
+            document.getElementById('statusText').innerHTML = `<span style="color: var(--accent-green)">Completed</span> • Live: ${liveUIDs.length} | Dead: ${deadUIDs.length} | Error: ${errorUIDs.length}`;
+        }
+
+        function updateUI() {
+            document.getElementById('liveCount').textContent = liveUIDs.length;
+            document.getElementById('deadCount').textContent = deadUIDs.length;
+            document.getElementById('errorCount').textContent = errorUIDs.length;
+            
+            const liveEl = document.getElementById('liveList');
+            const deadEl = document.getElementById('deadList');
+            
+            liveEl.textContent = liveUIDs.join('\n');
+            deadEl.textContent = deadUIDs.join('\n');
+            
+            liveUIDs.length ? liveEl.classList.add('has-data') : liveEl.classList.remove('has-data');
+            deadUIDs.length ? deadEl.classList.add('has-data') : deadEl.classList.remove('has-data');
+        }
+
+        function clearAll() {
+            document.getElementById('uidInput').value = '';
+            liveUIDs = [];
+            deadUIDs = [];
+            errorUIDs = [];
+            updateUI();
+            
+            document.getElementById('progressWrap').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('totalCount').textContent = '0';
+            document.getElementById('statusText').textContent = '';
+            
+            const checkBtn = document.getElementById('checkBtn');
+            checkBtn.innerHTML = '<i data-lucide="play" style="width: 16px;"></i> Start Check';
+            lucide.createIcons();
+        }
+
+        function copyList(type, btnObj) {
+            const list = type === 'live' ? liveUIDs : deadUIDs;
+            if (!list.length) return;
+            
+            navigator.clipboard.writeText(list.join('\n')).then(() => {
+                const originalHtml = btnObj.innerHTML;
+                btnObj.innerHTML = '<i data-lucide="check" style="width: 12px;"></i> Copied';
+                lucide.createIcons();
+                setTimeout(() => {
+                    btnObj.innerHTML = originalHtml;
+                    lucide.createIcons();
+                }, 1500);
+            });
+        }
+        
+        // Add simple spin keyframe for loader
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes spin { 100% { transform: rotate(360deg); } }`;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
